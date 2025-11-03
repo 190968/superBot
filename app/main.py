@@ -111,7 +111,7 @@ current_time = time.strftime('%d/%b/%Y %H:%M')
 async def main():
     print('Current time:', current_time)
     dp.include_routers(help.router, my_main.router, coord.router, photo.router, exchange.router, broad.router)
-    # loop = asyncio.get_running_loop()
+    # # loop = asyncio.get_running_loop()
     # loop.call_later(10, periodic)
     storage = FileMailerStorage()
     broadcaster = Broadcaster(bot, storage=storage)
