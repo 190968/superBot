@@ -35,7 +35,17 @@ async def change_currency(callback: types.CallbackQuery):
         ],
     ]
     keyboard = InlineKeyboardMarkup(inline_keyboard=kb)
-    await callback.message.edit_text(f'Что хочешь обменять ?',reply_markup=keyboard)
+    await callback.message.edit_text('Что хочешь обменять ?',reply_markup=keyboard)
+
+@router.callback_query(F.data == 'view')
+async def change_currency(callback: types.CallbackQuery):   
+    text = (
+        "<b>Today currency rates</b>\n"
+        "<pre>currency | $     | Euro\n"
+        "$        | 1     | 0.86\n"
+        "euro     | 1.23  | 1</pre>"
+    )
+    await callback.message.edit_text(text, parse_mode="HTML")
 
 @router.callback_query(F.data.in_({'euro','dollar','ruble','blr'}))
 async def currency(callback: types.CallbackQuery):
