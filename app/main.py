@@ -19,7 +19,7 @@ from aiogram.enums import ParseMode
 from aiogram.filters.command import Command, CommandStart
 from aiogram_broadcaster import Broadcaster
 from aiogram_broadcaster.storages.file import FileMailerStorage
-from handlers import help, my_main, coord, photo, exchange, broad
+from handlers import help, my_main, coord, photo, exchange, broad, users
 
 logging.basicConfig(level=logging.INFO)
 
@@ -83,10 +83,10 @@ async def cmd_test1(message: types.Message, mylist: set[str]):
 async def buy_shoes(message: types.Message):
     builder = InlineKeyboardBuilder()
     builder.add(types.InlineKeyboardButton(
-        text="Нажми меня",
+        text="Click if YES",
         callback_data="random_value")
     )
-    await message.answer(f"Привет мой друг <b>{html.bold(message.from_user.full_name)}!</b>\n Хочешь купить валюту?",
+    await message.answer(f"Привет мой друг <b>{html.bold(message.from_user.full_name)}!</b>\n Хочешь обменять валюту?",
                          reply_markup=builder.as_markup(),
                          parse_mode=ParseMode.HTML)
 @dp.message(CommandStart())
@@ -110,7 +110,7 @@ current_time = time.strftime('%d/%b/%Y %H:%M')
 
 async def main():
     print('Current time:', current_time)
-    dp.include_routers(help.router, my_main.router, coord.router, photo.router, exchange.router, broad.router)
+    dp.include_routers(help.router, my_main.router, users.router, coord.router, photo.router, exchange.router, broad.router)
     # # loop = asyncio.get_running_loop()
     # loop.call_later(10, periodic)
     storage = FileMailerStorage()

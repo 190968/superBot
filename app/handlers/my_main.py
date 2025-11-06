@@ -14,7 +14,7 @@ dp = Dispatcher()
 
 
 @router.message(Command("hello"))
-async def message_text(message: types.Message, bot: bot):
+async def message_text(message: types.Message):
     print('hello')
     keyboard = [
             [InlineKeyboardButton(text = "Привет друг", callback_data="myhello")],
@@ -27,8 +27,7 @@ async def message_text(message: types.Message, bot: bot):
                           f"Сегодня: {current_time} \n", reply_markup=inline_kb1)
 
 @dp.callback_query(F.data == "myhello")
-async def button1_one(callback_query: types.CallbackQuery):
-    print('button')
+async def button1_one(callback_query: types.CallbackQuery):   
     await bot.answer_callback_query(callback_query.id)
     await bot.send_message(
         callback_query.from_user.id,
