@@ -2,8 +2,8 @@ import asyncio
 import logging
 import sys
 import time
-from datetime import datetime
-
+from datetime import datetime, timezone
+import sqlite3
 import requests
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.fsm.context import FSMContext
@@ -25,6 +25,19 @@ logging.basicConfig(level=logging.INFO)
 
 from config import TOKEN
 
+conn = sqlite3.connect("mydatabase.db")
+cursor = conn.cursor()
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    name INTEGER,
+    message TEXT           
+)
+""")
+conn.commit()
+conn.close()
+
 bot = Bot(token=TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
 
 dp = Dispatcher(bot=Bot, storage=MemoryStorage())
@@ -43,23 +56,39 @@ mylist = set()
 
 
 @dp.message(F.text.startswith('test'))
-async def cmd_test1(message: types.Message):
-    bot_name = await bot(GetMyName())
-    print(bot_name)
-    mylist.add(message.from_user.first_name)
-    for z in mylist:
-        print(z)
-    info_chat = message.from_user.language_code
-    await message.answer(f"Hello {message.from_user.first_name}. My {bot_name}. Test is good")
+async def cmd_test1(message: types.Message):    
+    me = await bot.get_me()   
+    print(f"Bot name: {me.first_name}")
+    print(f"Bot username: @{me.username}")
+    conn = sqlite3.connect("mydatabase.db")
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM users")
+    rows = cursor.fetchall()   
+    for z in rows:
+        print(z)    
+    await message.answer(f"Hello my friend {message.from_user.first_name}. My name {me.first_name}. Test passed")
 
-@dp.message(F.text.startswith('message'))
+@dp.message(F.text.startswith('Ok.'))
 async def webhook(message: types.Message):
-    bot_name = await bot(GetMyName())
-    response = requests.post('https://bobozeranski.app.n8n.cloud/webhook-test/APIsssi', json={'message': message.from_user.first_name})
+    mylist.add(message.from_user.first_name)
+    conn = sqlite3.connect("mydatabase.db")
+    cursor = conn.cursor()
+    cursor.execute("INSERT INTO users (date, name, message) VALUES (?, ?, ?)", (    
+    message.date,
+    message.from_user.first_name, 
+    message.text
+    ))
+    conn.commit()
+    
+    
+    response = requests.post('http://144.124.245.103/webhook/APIsssi',
+                              json={"sender": f"{message.from_user.first_name}",
+  	                            "instance": f"{message.from_user.username}",
+  	                            "message": f"{message.text}"}
+                              )
     data = response.json()
-    my_message = data.get('message', 'No message found')
-    print(my_message)
-    await message.answer(f"Hello {message.from_user.first_name}. My {my_message}. Test is good")
+    ii_message = data.get('output')    
+    await message.answer(f"{ii_message}")
 
 @dp.message(Command("info"))
 async def info(message: types.Message, started_at: str, developer: str):
