@@ -99,8 +99,7 @@ async def info(message: types.Message, started_at: str, developer: str):
 
 @dp.message(Command("list"))
 async def cmd_test1(message: types.Message, mylist: set[str]):
-    mylist.add(message.from_user.first_name)
-    print(message.date, message.from_user.first_name)
+    mylist.add(message.from_user.first_name)   
     await message.answer(f" The users this bot: <b> {', '.join(mylist)} </b>",
 
                          parse_mode=ParseMode.HTML)
@@ -117,8 +116,7 @@ async def buy_shoes(message: types.Message):
                          parse_mode=ParseMode.HTML)
 @dp.message(CommandStart())
 async def send_welcome(message: types.Message):
-    f = open("id.txt", "a")
-    f.write(str(message.chat.id) + ',')
+    
     await message.answer(f"Привет мой друг  <b>{html.bold(message.from_user.full_name)}!</b> "
                          f"\n Используй команду  /help , чтобы узнать список доступных команд!",
                          parse_mode=ParseMode.HTML)
