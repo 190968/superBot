@@ -52,7 +52,7 @@ class CurrencyForm(StatesGroup):
     language = State()
 
 
-mylist = set()
+
 
 
 @dp.message(F.text.startswith('test'))
@@ -70,7 +70,7 @@ async def cmd_test1(message: types.Message):
 
 @dp.message(F.text.startswith('Ok.'))
 async def webhook(message: types.Message):
-    mylist.add(message.from_user.first_name)
+   
     conn = sqlite3.connect("mydatabase.db")
     cursor = conn.cursor()
     cursor.execute("INSERT INTO users (date, name, message) VALUES (?, ?, ?)", (    
@@ -95,10 +95,7 @@ async def info(message: types.Message, started_at: str, developer: str):
     await message.answer(f"Bot started in {started_at} .\nDevelopers : {developer}. ")
 
 
-@dp.message(Command("send_span"))
-async def send(message: types.Message):
-    print(message.date, message.from_user.first_name, mylist)
-    await message.answer('czxczxcxzczxc')
+
 
 @dp.message(Command("list"))
 async def cmd_test1(message: types.Message, mylist: set[str]):
