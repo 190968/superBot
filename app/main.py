@@ -68,26 +68,26 @@ async def cmd_test1(message: types.Message):
         print(z)    
     await message.answer(f"Hello my friend {message.from_user.first_name}. My name {me.first_name}. Test passed")
 
-@dp.message(F.text.startswith('Ok.'))
+@dp.message()
 async def webhook(message: types.Message):
    
-    conn = sqlite3.connect("mydatabase.db")
-    cursor = conn.cursor()
-    cursor.execute("INSERT INTO users (date, name, message) VALUES (?, ?, ?)", (    
-    message.date,
-    message.from_user.first_name, 
-    message.text
-    ))
-    conn.commit()
+    # conn = sqlite3.connect("mydatabase.db")
+    # cursor = conn.cursor()
+    # cursor.execute("INSERT INTO users (date, name, message) VALUES (?, ?, ?)", (    
+    # message.date,
+    # message.from_user.first_name, 
+    # message.text
+    # ))
+    # conn.commit()
     
     
-    response = requests.post('http://144.124.245.103/webhook/APIsssi',
-                              json={"sender": f"{message.from_user.first_name}",
+    response = requests.post('http://144.124.245.103/n8n/webhook/APIsssi',
+                              json ={"sender": f"{message.from_user.first_name}",
   	                            "instance": f"{message.from_user.username}",
   	                            "message": f"{message.text}"}
                               )
     data = response.json()
-    ii_message = data.get('output')    
+    ii_message = data.get('response')    
     await message.answer(f"{ii_message}")
 
 @dp.message(Command("info"))
