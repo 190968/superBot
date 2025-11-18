@@ -25,18 +25,18 @@ logging.basicConfig(level=logging.INFO)
 
 from config import TOKEN
 
-conn = sqlite3.connect("mydatabase.db")
-cursor = conn.cursor()
-cursor.execute("""
-CREATE TABLE IF NOT EXISTS users (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    date DATETIME DEFAULT CURRENT_TIMESTAMP,
-    name INTEGER,
-    message TEXT           
-)
-""")
-conn.commit()
-conn.close()
+# conn = sqlite3.connect("mydatabase.db")
+# cursor = conn.cursor()
+# cursor.execute("""
+# CREATE TABLE IF NOT EXISTS users (
+#     id INTEGER PRIMARY KEY AUTOINCREMENT,
+#     date DATETIME DEFAULT CURRENT_TIMESTAMP,
+#     name INTEGER,
+#     message TEXT           
+# )
+# """)
+# conn.commit()
+# conn.close()
 
 bot = Bot(token=TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
 
@@ -58,8 +58,8 @@ class CurrencyForm(StatesGroup):
 @dp.message(F.text.startswith('test'))
 async def cmd_test1(message: types.Message):    
     me = await bot.get_me()   
-    print(f"Bot name: {me.first_name}")
-    print(f"Bot username: @{me.username}")
+    # print(f"Bot name: {me.first_name}")
+    # print(f"Bot username: @{me.username}")
     conn = sqlite3.connect("mydatabase.db")
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM users")
@@ -68,9 +68,52 @@ async def cmd_test1(message: types.Message):
         print(z)    
     await message.answer(f"Hello my friend {message.from_user.first_name}. My name {me.first_name}. Test passed")
 
+
+
+# @dp.message(Command("info"))
+# async def info(message: types.Message, started_at: str, developer: str):
+#     await message.answer(f"Bot started in {started_at} .\nDevelopers : {developer}. ")
+
+
+
+
+# @dp.message(Command("list"))
+# async def cmd_test1(message: types.Message, mylist: set[str]):
+#     mylist.add(message.from_user.first_name)   
+#     await message.answer(f" The users this bot: <b> {', '.join(mylist)} </b>",
+
+#                          parse_mode=ParseMode.HTML)
+
+# @dp.message(Command("buy"))
+# async def buy_shoes(message: types.Message):
+#     builder = InlineKeyboardBuilder()
+#     builder.add(types.InlineKeyboardButton(
+#         text="Click if YES",
+#         callback_data="random_value")
+#     )
+#     await message.answer(f"Привет мой друг <b>{html.bold(message.from_user.full_name)}!</b>\n Хочешь обменять валюту?",
+#                          reply_markup=builder.as_markup(),
+#                          parse_mode=ParseMode.HTML)
+# @dp.message(CommandStart())
+# async def send_welcome(message: types.Message):
+    
+#     await message.answer(f"Привет мой друг  <b>{html.bold(message.from_user.full_name)}!</b> "
+#                          f"\n Используй команду  /help , чтобы узнать список доступных команд!",
+#                          parse_mode=ParseMode.HTML)
+
+
+# @dp.message(Command('setstate'))
+# async def periodic(message: types.Message, state: FSMContext):
+#     await state.set_state(CurrencyForm.count)
+
+#     await bot.send_message(message.from_user.id, f"Hello, enter count ", disable_notification=True)
+
+
+# current_time = time.strftime('%d/%b/%Y %H:%M')
+
+
 @dp.message()
-async def webhook(message: types.Message):
-   
+async def webhook(message: types.Message):   
     # conn = sqlite3.connect("mydatabase.db")
     # cursor = conn.cursor()
     # cursor.execute("INSERT INTO users (date, name, message) VALUES (?, ?, ?)", (    
@@ -90,51 +133,8 @@ async def webhook(message: types.Message):
     ii_message = data.get('response')    
     await message.answer(f"{ii_message}")
 
-@dp.message(Command("info"))
-async def info(message: types.Message, started_at: str, developer: str):
-    await message.answer(f"Bot started in {started_at} .\nDevelopers : {developer}. ")
-
-
-
-
-@dp.message(Command("list"))
-async def cmd_test1(message: types.Message, mylist: set[str]):
-    mylist.add(message.from_user.first_name)   
-    await message.answer(f" The users this bot: <b> {', '.join(mylist)} </b>",
-
-                         parse_mode=ParseMode.HTML)
-
-@dp.message(Command("buy"))
-async def buy_shoes(message: types.Message):
-    builder = InlineKeyboardBuilder()
-    builder.add(types.InlineKeyboardButton(
-        text="Click if YES",
-        callback_data="random_value")
-    )
-    await message.answer(f"Привет мой друг <b>{html.bold(message.from_user.full_name)}!</b>\n Хочешь обменять валюту?",
-                         reply_markup=builder.as_markup(),
-                         parse_mode=ParseMode.HTML)
-@dp.message(CommandStart())
-async def send_welcome(message: types.Message):
-    
-    await message.answer(f"Привет мой друг  <b>{html.bold(message.from_user.full_name)}!</b> "
-                         f"\n Используй команду  /help , чтобы узнать список доступных команд!",
-                         parse_mode=ParseMode.HTML)
-
-
-@dp.message(Command('setstate'))
-async def periodic(message: types.Message, state: FSMContext):
-    await state.set_state(CurrencyForm.count)
-
-    await bot.send_message(message.from_user.id, f"Hello, enter count ", disable_notification=True)
-
-
-current_time = time.strftime('%d/%b/%Y %H:%M')
-
-
-async def main():
-    print('Current time:', current_time)
-    dp.include_routers(help.router, my_main.router, users.router, coord.router, photo.router, exchange.router, broad.router)
+async def main():    
+    # dp.include_routers(help.router, my_main.router, users.router, coord.router, photo.router, exchange.router, broad.router)
     # # loop = asyncio.get_running_loop()
     # loop.call_later(10, periodic)
     storage = FileMailerStorage()
