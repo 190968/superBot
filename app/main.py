@@ -21,7 +21,7 @@ from aiogram.filters.command import Command, CommandStart
 from aiogram_broadcaster import Broadcaster
 from aiogram_broadcaster.storages.file import FileMailerStorage
 from handlers import help, my_main, coord, photo, exchange, broad, users
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 logging.basicConfig(level=logging.INFO)
 
 from config import TOKEN
