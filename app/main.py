@@ -1,5 +1,6 @@
 import asyncio
 import logging
+import os
 import sys
 import time
 from datetime import datetime, timezone
@@ -20,11 +21,12 @@ from aiogram.filters.command import Command, CommandStart
 from aiogram_broadcaster import Broadcaster
 from aiogram_broadcaster.storages.file import FileMailerStorage
 from handlers import help, my_main, coord, photo, exchange, broad, users
-
+from dotenv import load_dotenv
 logging.basicConfig(level=logging.INFO)
 
 from config import TOKEN
-
+# load_dotenv()
+# TOKEN = os.getenv("TOKEN")
 # conn = sqlite3.connect("mydatabase.db")
 # cursor = conn.cursor()
 # cursor.execute("""
@@ -60,12 +62,11 @@ async def cmd_test1(message: types.Message):
     me = await bot.get_me()   
     # print(f"Bot name: {me.first_name}")
     # print(f"Bot username: @{me.username}")
-    conn = sqlite3.connect("mydatabase.db")
-    cursor = conn.cursor()
-    cursor.execute("SELECT * FROM users")
-    rows = cursor.fetchall()   
-    for z in rows:
-        print(z)    
+    # conn = sqlite3.connect("mydatabase.db")
+    # cursor = conn.cursor()
+    # cursor.execute("SELECT * FROM users")
+    # rows = cursor.fetchall()   
+    
     await message.answer(f"Hello my friend {message.from_user.first_name}. My name {me.first_name}. Test passed")
 
 
@@ -74,7 +75,18 @@ async def cmd_test1(message: types.Message):
 # async def info(message: types.Message, started_at: str, developer: str):
 #     await message.answer(f"Bot started in {started_at} .\nDevelopers : {developer}. ")
 
+@dp.message(Command("start"))
+async def handle_start(message):
+    lang = message.from_user.language_code
 
+    if lang.startswith("es"):
+        text = "Hola 👋 Soy tu asistente de IA."
+    elif lang.startswith("ru"):
+        text = "Привет 👋 Я твой AI-ассистент."
+    else:
+        text = "Hi 👋 I'm your AI assistant."
+
+    await message.answer(text=text)
 
 
 # @dp.message(Command("list"))
@@ -123,11 +135,13 @@ async def webhook(message: types.Message):
     # ))
     # conn.commit()
     
-    
+    user_lang = message.from_user.language_code
+    print(user_lang)
     response = requests.post('http://144.124.245.103/n8n/webhook/APIsssi',
                               json ={"sender": f"{message.from_user.first_name}",
   	                            "instance": f"{message.from_user.username}",
-  	                            "message": f"{message.text}"}
+  	                            "message": f"{message.text}",
+                                "lang": f"{user_lang}"},
                               )
     data = response.json()
     ii_message = data.get('response')    
